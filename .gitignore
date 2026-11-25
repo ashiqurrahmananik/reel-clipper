@@ -1,0 +1,31 @@
+# Generated media, captions and cache (can be many GB)
+output/
+*.mp4
+*.m4a
+*.srt
+*.vtt
+*.ass
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets and local config
+.env
+*.key
+*.pem

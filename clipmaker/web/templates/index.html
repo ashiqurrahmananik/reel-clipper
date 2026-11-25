@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reel Clipper — long video to viral clips</title>
+<style>
+  :root{--bg:#0b0d12;--panel:#141822;--panel2:#1b2130;--line:#2a3245;--text:#eef2ff;--muted:#98a2b8;--accent:#ff4d6d;--accent2:#7c5cff;--ok:#35d399}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 600px at 15% -10%,#25183d 0%,transparent 55%),radial-gradient(900px 500px at 100% 0%,#122b3d 0%,transparent 50%),var(--bg);color:var(--text);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 20px 80px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:20px;box-shadow:0 8px 24px #ff4d6d33}
+  h1{font-size:25px;margin:0;letter-spacing:-.4px}
+  .sub{color:var(--muted);margin:0 0 26px}
+  .card{background:linear-gradient(180deg,#171c28,#121620);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 50px #0005}
+  label{display:block;font-size:12px;font-weight:650;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 7px}
+  input,select{width:100%;background:#0d1119;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:12px 13px;font:inherit;outline:none}
+  input:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px #7c5cff22}
+  .grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:14px}
+  .grid2{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:14px}
+  .checks{display:flex;gap:20px;align-items:center;margin:16px 0;flex-wrap:wrap;color:var(--muted);font-size:14px}
+  .checks label{display:flex;gap:8px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font-size:14px;cursor:pointer}
+  input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent)}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  button{border:0;border-radius:11px;padding:13px 20px;font:650 15px inherit;cursor:pointer;background:linear-gradient(135deg,var(--accent),#ff6b4d);color:#fff;box-shadow:0 10px 26px #ff4d6d33}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  button.ghost{background:#202737;box-shadow:none;border:1px solid var(--line)}
+  button.small{padding:8px 12px;font-size:13px}
+  .hint{color:var(--muted);font-size:12px;margin-top:8px}
+  .status{margin-top:20px;display:none}
+  .bar{height:7px;background:#0d1119;border-radius:99px;overflow:hidden;margin:10px 0 8px}
+  .bar>i{display:block;height:100%;width:12%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s;animation:pulse 1.4s infinite alternate}
+  @keyframes pulse{to{filter:brightness(1.35)}}
+  .msg{color:var(--muted);font-size:13px;white-space:pre-wrap}
+  .err{color:#ff8fa3;background:#3a142233;border:1px solid #6e233d;padding:12px;border-radius:10px;margin-top:10px;display:none}
+  h2{font-size:18px;margin:34px 0 14px}
+  .clips{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+  .clip{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .clip video{width:100%;aspect-ratio:9/16;background:#000;display:block;object-fit:contain;max-height:430px}
+  .clip .body{padding:12px}
+  .badge{display:inline-block;background:#7c5cff22;color:#b9a7ff;border-radius:99px;padding:3px 9px;font-size:11px;font-weight:700}
+  .meta{color:var(--muted);font-size:12px;margin:8px 0 6px}
+  .desc{font-size:13px;color:#cdd5e6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:57px}
+  .clip a{display:block;text-align:center;text-decoration:none;background:#242c3d;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px;margin-top:10px;font-weight:650;font-size:13px}
+  .clip a:hover{border-color:var(--accent)}
+  details{color:var(--muted);font-size:13px;margin-top:24px}
+  summary{cursor:pointer;color:#cdd5e6}
+  .empty{color:var(--muted);border:1px dashed var(--line);border-radius:14px;padding:22px;text-align:center}
+  @media(max-width:800px){.grid,.grid2{grid-template-columns:1fr 1fr}.grid>div:first-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="logo">✂️</div><h1>Reel Clipper</h1></header>
+  <p class="sub">Paste a long video link. It finds the funniest / most interesting moments and exports vertical, captioned clips.</p>
+
+  <div class="card">
+    <div class="row" style="margin-bottom:14px">
+      <div style="flex:2;min-width:260px">
+        <label for="local_folder">Already downloaded video</label>
+        <select id="local_folder"><option value="">— Paste a new link below —</option></select>
+      </div>
+      <div style="flex:1;min-width:170px">
+        <label for="test_start">Fast-test start (seconds)</label>
+        <input id="test_start" type="number" value="600" min="0">
+      </div>
+    </div>
+    <div class="grid">
+      <div><label for="url">Video URL</label><input id="url" placeholder="https://www.youtube.com/watch?v=…"></div>
+      <div><label for="count">Clips</label><input id="count" type="number" value="4" min="1" max="12"></div>
+      <div><label for="length">Seconds each</label><input id="length" type="number" value="30" min="10" max="90"></div>
+      <div><label for="style">Layout</label><select id="style"><option value="blur">Blur background</option><option value="crop">Center crop</option></select></div>
+    </div>
+    <div class="grid2">
+      <div><label for="lang">Caption languages</label><input id="lang" value="en,en-US,hi,bn"></div>
+      <div><label for="whisper_model">Whisper model (no captions)</label><select id="whisper_model"><option>small</option><option>base</option><option>medium</option><option>large-v3</option></select></div>
+      <div><label for="language">Force transcript language (optional)</label><input id="language" placeholder="e.g. bn, en, hi"></div>
+      <div><label for="ai_model">Moment-ranking model</label><select id="ai_model"><option value="opencode/big-pickle">Big Pickle (OpenCode)</option><option value="gpt-4o-mini">GPT-4o mini (needs key)</option><option value="none">None (free heuristics)</option></select></div>
+      <div><label for="api_key">OpenAI key (only for GPT models)</label><input id="api_key" type="password" placeholder="sk-…"></div>
+    </div>
+    <div class="checks">
+      <label><input id="captions" type="checkbox" checked> Burn captions</label>
+      <label><input id="keep_source" type="checkbox"> Keep full downloaded video</label>
+      <label><input id="fast_test" type="checkbox"> ⚡ Fast test — 1 short clip, no captions or transcription</label>
+      <span class="hint">Without captions on YouTube, local Whisper transcription is used. Fast test skips it entirely.</span>
+    </div>
+    <div class="row"><button id="go">Find & cut clips</button><span class="hint">Pick an already downloaded video above to avoid downloading again.</span></div>
+
+    <div class="status" id="status">
+      <div class="msg" id="msg">Working…</div>
+      <div class="bar"><i id="bar"></i></div>
+    </div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div class="card" id="source" style="display:none;margin-top:22px"></div>
+
+  <h2>Your clips</h2>
+  <div class="clips" id="clips"><div class="empty">No clips yet — paste a link above to get started.</div></div>
+
+  <details><summary>Previously generated clips</summary><div id="library" class="clips" style="margin-top:14px"></div></details>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let jobId = null, timer = null;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+function clipCard(c, base){
+  const score = Math.round(c.score || 0);
+  return `<div class="clip">
+    <video controls preload="metadata" playsinline src="${base}${c.filename}"></video>
+    <div class="body">
+      <span class="badge">Score ${score}</span>
+      <div class="meta">${Math.round(c.start)}s – ${Math.round(c.end)}s · ${c.duration ? Math.round(c.duration)+'s' : ''}</div>
+      <div class="desc">${esc(c.preview)}</div>
+      <a href="${base}${c.filename}" download>⬇ Download ${c.filename}</a>
+    </div>
+  </div>`;
+}
+
+function openFolder(folder){
+  fetch('/api/open/' + encodeURIComponent(folder), {method:'POST'})
+    .then(r=>r.json()).then(d=>{ if(d.error) alert(d.error); })
+    .catch(e=>alert('Could not open folder: '+e.message));
+}
+
+function showManifest(m){
+  const base = `/api/jobs/${jobId}/clips/`;
+  const folder = (m.folder || '').split(/[\\/]/).pop();
+  const reuse = (m.from_cache ? 'Reused cached download' : 'Downloaded fresh') +
+                (m.from_transcript_cache ? ' · cached transcript' : '') +
+                (m.fast_test ? ' · fast test' : '');
+  const sourceLink = m.source_url ? `<a href="${esc(m.source_url)}" target="_blank" rel="noopener">Open source link ↗</a>` : '—';
+  const fullVideo = (m.keep_source || m.local_source)
+    ? `<a class="ghost small" style="text-decoration:none;color:var(--text)" href="/api/source/${encodeURIComponent(folder)}">⬇ Full video</a>`
+    : '<span class="hint">Full video not kept (enable “Keep full downloaded video” before running)</span>';
+  $('source').style.display = 'block';
+  $('source').innerHTML = `<div class="row" style="justify-content:space-between;align-items:flex-start">
+    <div><strong>${esc(m.title)}</strong>
+      <div class="meta">Source: ${sourceLink}</div>
+      <div class="meta">Folder: <code>output/${esc(folder)}</code> · ${esc(reuse)}</div>
+      <div class="meta">Ranking model: ${esc(!m.ai_model || m.ai_model === 'none' ? 'none (local heuristics)' : m.ai_model)}</div>
+    </div>
+    <div class="row"><button class="ghost small" onclick="openFolder('${esc(folder)}')">📂 Open folder</button>${fullVideo}</div>
+  </div>`;
+  $('clips').innerHTML = m.clips.length ? m.clips.map(c => clipCard(c, base)).join('') : '<div class="empty">No clips produced.</div>';
+  loadLibrary();
+}
+
+function poll(){
+  if(!jobId) return;
+  fetch(`/api/jobs/${jobId}`).then(r => {
+    if (r.status === 404) {
+      clearInterval(timer); timer = null; $('go').disabled = false;
+      $('err').style.display = 'block';
+      $('err').textContent = 'Job expired after a server restart. Please submit the link again.';
+      return null;
+    }
+    return r.json();
+  }).then(j => {
+    if (!j) return;
+    $('status').style.display = 'block';
+    const pct = j.status === 'done' ? 100 : Math.max(2, Math.min(100, Number(j.percent) || 0));
+    $('bar').style.width = pct + '%';
+    $('msg').textContent = Math.round(pct) + '% · ' + (j.progress || j.status);
+    if(j.status === 'done'){ clearInterval(timer); timer=null; $('go').disabled=false; showManifest(j.manifest); }
+    if(j.status === 'error'){
+      clearInterval(timer); timer=null; $('go').disabled=false;
+      $('err').style.display='block'; $('err').textContent = j.error || 'Something went wrong.';
+    }
+  }).catch(e=>{ $('msg').textContent = 'Polling error: '+e; });
+}
+
+function loadLocalSources(){
+  fetch('/api/local-sources').then(r=>r.json()).then(d=>{
+    $('local_folder').innerHTML = '<option value="">— Paste a new link below —</option>' +
+      d.items.map(it => `<option value="${esc(it.folder)}">${esc(it.label)} · ${Math.round(it.duration/60)} min${it.needs_mux ? ' (mux local parts)' : ''}</option>`).join('');
+  }).catch(()=>{});
+}
+
+$('go').onclick = () => {
+  const url = $('url').value.trim();
+  const local_folder = $('local_folder').value;
+  if(!url && !local_folder){ $('err').style.display='block'; $('err').textContent='Enter a video URL or pick an already downloaded video.'; return; }
+  $('err').style.display='none'; $('clips').innerHTML='<div class="empty">Working on it…</div>';
+  $('go').disabled = true;
+  const body = {
+    url, local_folder, fast_test:$('fast_test').checked, test_start:+$('test_start').value,
+    count:+$('count').value, length:+$('length').value, style:$('style').value,
+    captions:$('captions').checked, keep_source:$('keep_source').checked,
+    lang:$('lang').value, whisper_model:$('whisper_model').value,
+    language:$('language').value, ai_model:$('ai_model').value, api_key:$('api_key').value
+  };
+  fetch('/api/jobs', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
+    .then(r=>r.json().then(d=>({ok:r.ok,d})))
+    .then(({ok,d})=>{
+      if(!ok || !d.id){ throw new Error(d.error || 'Could not start job.'); }
+      jobId = d.id; $('status').style.display='block'; $('msg').textContent='Queued…';
+      clearInterval(timer); timer = setInterval(poll, 1500); poll();
+    })
+    .catch(e=>{ $('err').style.display='block'; $('err').textContent=e.message; $('go').disabled=false; });
+};
+
+function loadLibrary(){
+  fetch('/api/library').then(r=>r.json()).then(d=>{
+    const box = $('library');
+    box.innerHTML = d.items.length ? d.items.map(item =>
+      `<div style="grid-column:1/-1"><strong>${esc(item.title||'Untitled')}</strong>
+        <div class="meta">${item.source_url ? `<a href="${esc(item.source_url)}" target="_blank" rel="noopener">Source link ↗</a> · ` : ''}${esc(item.created_at||'')}</div>
+        <div class="clips" style="margin-top:10px">${item.clips.map(c=>clipCard(c, `/api/library/${item.folder}/`)).join('')}</div>
+       </div>`).join('') : '<div class="empty">Nothing generated yet.</div>';
+  }).catch(()=>{});
+}
+loadLibrary();
+loadLocalSources();
+</script>
+</body>
+</html>

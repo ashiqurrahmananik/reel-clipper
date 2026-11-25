@@ -1,0 +1,5 @@
+# Optional: only needed for videos that have no subtitles/captions.
+# Install with: python -m pip install -r requirements-whisper.txt
+faster-whisper>=1.1.0
+# PyAV 19 removed the `metadata_errors` argument used by faster-whisper.
+av>=11,<18

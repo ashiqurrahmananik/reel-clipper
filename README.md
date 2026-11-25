@@ -37,7 +37,11 @@ python -m clipmaker "https://www.youtube.com/watch?v=VIDEO_ID" -n 5 --length 30
 
 Clips land in `output/<video-title>/clip_01.mp4`, `clip_02.mp4`, … with a `manifest.json` describing each moment.
 
-A real 30-second sample output is included at [`examples/clip_01.mp4`](examples/clip_01.mp4).
+### Sample output
+
+[![Playable sample reel preview](https://raw.githubusercontent.com/ashiqurrahmananik/reel-clipper/main/examples/clip_01_preview.gif)](https://github.com/ashiqurrahmananik/reel-clipper/blob/main/examples/clip_01.mp4)
+
+The animated preview above plays inline on GitHub. Click it to open the full 30-second [`clip_01.mp4`](examples/clip_01.mp4) in GitHub's video player.
 
 ## Requirements
 

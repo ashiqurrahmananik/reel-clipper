@@ -37,6 +37,8 @@ python -m clipmaker "https://www.youtube.com/watch?v=VIDEO_ID" -n 5 --length 30
 
 Clips land in `output/<video-title>/clip_01.mp4`, `clip_02.mp4`, … with a `manifest.json` describing each moment.
 
+A real 30-second sample output is included at [`examples/clip_01.mp4`](examples/clip_01.mp4).
+
 ## Requirements
 
 - **Python 3.10+**

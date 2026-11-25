@@ -1,6 +1,7 @@
 # Generated media, captions and cache (can be many GB)
 output/
 *.mp4
+!examples/*.mp4
 *.m4a
 *.srt
 *.vtt
